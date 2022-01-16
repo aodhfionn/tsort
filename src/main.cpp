@@ -10,6 +10,8 @@ int numbers[79];
 int yMax, xMax;
 int size;
 
+const int delay = 25; // delay in milliseconds
+
 void fill(int numbers[], int size)
 {
 	for (int i = 0; i < size; i++)
@@ -37,11 +39,18 @@ void printbars()
 	}
 
 	std::stringstream ss;
-	ss << "Swaps: " << sort::swaps << "\nComparisons: " << sort::comparisons;
+
+	ss << "Bubble Sort\n";
+	ss << size << " Numbers\n";
+	ss << "\nSwaps: " << sort::swaps;
+	ss << "\nComparisons: " << sort::comparisons;
+	ss << "\nDelay: " << delay << "ms";
 	std::string data = ss.str();
 
 	mvprintw(0, 0, data.c_str());
-	getch();
+
+	refresh();
+	usleep(1000*delay);
 }
 
 int main()
