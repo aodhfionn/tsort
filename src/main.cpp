@@ -4,13 +4,11 @@
 #include <sstream>
 #include "sorting.hpp"
 
-// pass in function to sort that gets called for every iteration
-
 int numbers[79]; 
 int yMax, xMax;
 int size;
 
-const int delay = 25; // delay in milliseconds
+const int delay = 12; // delay in milliseconds
 
 void fill(int numbers[], int size)
 {
@@ -42,7 +40,7 @@ void printbars()
 	for (int i = 0; i < xMax; i=i+width)
 	{
 		int current = i/width;
-		float height = (numbers[current]/float(numbers[sort::find_max(numbers,size)]))*yMax;
+		float height = (numbers[current]/float(numbers[sort::find_max(numbers,size)]))*(yMax-6);
 	
 		/*
 		std::stringstream ss;
@@ -97,8 +95,10 @@ int main()
 	printbars();
 	getch();
 
-	sort::bubble(numbers,size,printbars);
-		
+	//sort::bubble(numbers,size,printbars);
+	sort::quick(numbers,0,size-1,printbars);
+	//sort::bogo(numbers,size,printbars);
+
 	getch();
 	endwin();
 	return 0;
