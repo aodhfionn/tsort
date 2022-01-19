@@ -39,7 +39,7 @@ bool sort::is_sorted(int numbers[], int size)
 	return true;
 }	
 
-void sort::bubble(int numbers[], int size, void(*func)())
+void sort::bubble(int numbers[], int size, void(*func)(int num[], int))
 {
 	bool swapped;
 	for (int i = 0; i < size-1; i++)
@@ -54,14 +54,14 @@ void sort::bubble(int numbers[], int size, void(*func)())
 				swap(&numbers[j],&numbers[j+1]);
 				swapped = true;
 			}
-			func();
+			func(numbers, size);
 		}
 		if (swapped = false)
 			break;
 	}
 }
 
-void sort::quick(int numbers[], int a, int b, void(*func)())
+void sort::quick(int numbers[], int size, int a, int b, void(*func)(int num[], int))
 {
 	if (a < b)
 	{
@@ -77,16 +77,16 @@ void sort::quick(int numbers[], int a, int b, void(*func)())
 				i++;
 				swap(&numbers[i], &numbers[j]);
 			}
-			func();
+			func(numbers, size);
 		}
 		swap(&numbers[i+1], &numbers[b]);
 
-		sort::quick(numbers, a, i, func);
-		sort::quick(numbers, i+2, b, func);
+		sort::quick(numbers, size, a, i, func);
+		sort::quick(numbers, size, i+2, b, func);
 	}
 }
 
-void sort::bogo(int numbers[], int size, void(*func)())
+void sort::bogo(int numbers[], int size, void(*func)(int num[], int))
 {
 	while (!sort::is_sorted(numbers,size))
 	{
@@ -94,7 +94,7 @@ void sort::bogo(int numbers[], int size, void(*func)())
 		{
 			sort::selected = i;
 			swap(&numbers[i], &numbers[rand()%size]);
-			func();
+			func(numbers, size);
 		}
 	}
 }
