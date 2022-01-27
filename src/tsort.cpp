@@ -2,7 +2,6 @@
 #include <unistd.h>
 #include <ncurses.h>
 #include <sstream>
-#include <getopt.h>
 #include "sorting.hpp"
 
 int yMax, xMax;
@@ -11,7 +10,7 @@ struct config
 {
 	int amount;
 	int delay;
-	const char* type;
+	std::string type;
 } conf;	
 
 
@@ -23,11 +22,35 @@ void fill(int numbers[], int size)
 	}
 }
 
-void printdebug(int numbers[], int size)
+int quit(struct config *cf, int code, std::string msg)
+{
+	clear();
+	refresh();
+	endwin();
+
+	std::cout << msg << std::endl;
+
+	free(cf);
+	exit(code);
+}
+
+void printdebug(struct config *cf, int numbers[], int size)
 {
 	std::stringstream ss;
+	std::string type = cf->type;
 
-	ss << "Bubble Sort\n";
+	/*
+	int c = int(type[0]);
+	if (c > 140 && c < 173)
+	{
+		c += 32;
+	}
+	type[0] = char(c);
+	*/
+
+	type[0] = toupper(type[0]);
+
+	ss << type << " Sort\n";
 	ss << size << " Numbers\n";
 	ss << "\nSwaps: " << sort::swaps;
 	ss << "\nComparisons: " << sort::comparisons;
@@ -66,7 +89,7 @@ void printbars(int numbers[], int size)
 		attroff(COLOR_PAIR(2));
 	}
 	
-	printdebug(numbers, size);
+	printdebug(&conf, numbers, size);
 
 	refresh();
 	usleep(1000*conf.delay);
@@ -74,14 +97,15 @@ void printbars(int numbers[], int size)
 
 int start()
 {
-	int numbers[conf.amount]; // this, for some reason, doesnt work
+	int n = conf.amount;
+	int numbers[n]; // this, for some reason, doesnt work
 	int size = sizeof(numbers)/sizeof(numbers[0]);
 
 	fill(numbers,size);
 
 	printbars(numbers,size);
-	getch(); 
-
+	getch();
+ 
 	if (conf.type == "bubble")
 	{
 		sort::bubble(numbers,size,printbars);
@@ -94,9 +118,9 @@ int start()
 	}else
 	{
 		endwin();
-		std::cout << "Sort type not found" << std::endl;
-		return 1;
-	}	
+		std::cout << "Sort type " << "\""<< conf.type << "\"" << " not found" << std::endl;
+		quit(&conf, 1, "");
+	}
 
 	getch();
 	endwin();
@@ -105,7 +129,7 @@ int start()
 
 void parse(int argc, char* argv[])
 {
-	for (int i = 1; i < argc; i++)
+	for (int i = 0; i < argc; i++)
 	{
 		std::string s(argv[i]);
 
@@ -118,18 +142,29 @@ void parse(int argc, char* argv[])
 				case 'n':
 				{
 					int n = std::stoi(arg);
+					if (n > xMax)
+					{
+						quit(&conf, 1, "Amount of numbers too large");					
+					}else if (n < 1)
+					{
+						quit(&conf, 1, "Amount of numbers must be greater than 0");
+					}
 					conf.amount = n;
 					break;
 				}
 				case 'd':
 				{
 					int d = std::stoi(arg);
+					if (d < 0)
+					{
+						quit(&conf, 1, "Delay cannot be less than 0 milliseconds");
+					}
 					conf.delay = d;
 					break;
 				}
 				case 't':
 				{
-					conf.type = arg.c_str();
+					conf.type = arg;
 					break;
 				}
 				default:
@@ -141,71 +176,21 @@ void parse(int argc, char* argv[])
 			}	
 		}	
 	}	
-}	
+}
 
 int main(int argc, char* argv[])
 {
-	/*
-	struct config conf = {
-		int amount = yMax/2;
-		int delay = 25;
-		const char* type;
-	};
-	*/
-
 	setlocale(LC_ALL, "");
 	initscr();
 	noecho();
 	curs_set(0);
 	getmaxyx(stdscr, yMax, xMax);
 
-	conf.amount = xMax/2;
+	conf.amount = 44;
 	conf.delay = 25;
 	conf.type = "quick";
 	
 	parse(argc, argv); //parsing type doesnt work
-/*
-	int index = 0;
-	int c;
-	while ((c = getopt(argc, argv, "ndt:")) != -1)
-	{
-		switch (c)
-		{
-			case 'n':
-			{
-				int n = std::atoi(optarg);
-				if (n > xMax || n < 1)
-				{
-					std::cout << "Amount must be in the range of 1 to " << xMax << std::endl;
-					return 1;
-				}
-				conf.amount = n;
-				break;
-			}
-			case 'd':
-			{
-				int d = std::atoi(optarg);
-				if (d < 0)
-				{
-					std::cout << "Delay can not be less than 0 milliseconds" << std::endl;
-					return 1;
-				}
-				conf.delay = d;
-				break;
-			}
-			case 't':
-			{
-				if (optarg == NULL)
-				{
-					std::cout << "Sort type can not be null" << std::endl;
-					return 1;
-				}	
-				conf.type = optarg;
-				break;
-			}
-		}	
-	}
-	*/
 
 	refresh();
 
@@ -215,9 +200,12 @@ int main(int argc, char* argv[])
 		init_pair(1, COLOR_WHITE, COLOR_WHITE);
 		init_pair(2, COLOR_RED, COLOR_RED);
 		init_pair(3, COLOR_GREEN, COLOR_GREEN);
-	}	
-	
-	start();
+		
+		start();
+	}else
+	{
+		quit(&conf, 1, "Your terminal is not supported");
+	}
 
 	return 0;
 }
