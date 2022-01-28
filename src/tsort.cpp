@@ -67,6 +67,7 @@ void printbars(int numbers[], int size)
 
 	for (int i = 0; i < xMax; i=i+width)
 	{
+
 		int current = i/width;
 		float height = (numbers[current]/float(numbers[sort::find_max(numbers,size)]))*(yMax-6);
 	
@@ -186,7 +187,7 @@ int main(int argc, char* argv[])
 	curs_set(0);
 	getmaxyx(stdscr, yMax, xMax);
 
-	conf.amount = 44;
+	conf.amount = xMax/2;
 	conf.delay = 25;
 	conf.type = "quick";
 	
