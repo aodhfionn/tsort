@@ -23,12 +23,21 @@ To uninstall:
 
 ## Usage
 
-Example command:
+Example command (all flags are optional):
 
-`tsort -t bubble -d 5 -n 158` (ALL FLAGS ARE OPTIONAL)
+`tsort -t bubble -d 5 -n 158`
 
 `-t` followed by algorithm choice (e.g. bubble, quick, bogo)
 
 `-d` followed by time delay (in milliseconds)
 
 `-n` (not reccomended for now) how many numbers to sort
+
+Current implemented algorithms:
+
+- Bubble Sort
+- Quick Sort
+- Cocktail Sort
+- Insertion Sort
+- Gnome Sort
+- Bogo Sort

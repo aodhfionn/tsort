@@ -98,3 +98,92 @@ void sort::bogo(int numbers[], int size, void(*func)(int num[], int))
 		}
 	}
 }
+
+void sort::insertion(int numbers[], int size, void(*func)(int num[], int))
+{
+	int k, j;
+	for (int i = 0; i < size; i++)
+	{
+		k = numbers[i];
+		j = i-1;
+
+		sort::comparisons++;
+		while (j >= 0 && numbers[j] > k)
+		{
+			sort::comparisons++;
+			sort::selected = j;
+			numbers[j+1] = numbers[j];
+			sort::swaps++;
+			j--;
+
+			func(numbers, size);
+		}
+		numbers[j+1] = k;
+		sort::swaps++;
+	}
+}
+
+void sort::cocktail(int numbers[], int size, void(*func)(int num[], int))
+{
+	bool swapped = true;
+	int a = 0;
+	int b = size-1;
+
+	while (swapped)
+	{
+		swapped = false;
+
+		for (int i = a; i < b; i++)
+		{
+			sort::selected = i;
+			if (numbers[i] > numbers[i+1])
+			{
+				swap(&numbers[i], &numbers[i+1]);
+				swapped = true;
+			}
+			sort::comparisons++;
+			func(numbers, size);
+		}
+
+		if (!swapped)
+			break;
+		
+		swapped = false;
+		b--;
+
+		for (int i = b-1; i >= a; i--)
+		{
+			sort::selected = i;
+			if (numbers[i] > numbers[i+1])
+			{
+				swap(&numbers[i], &numbers[i+1]);
+				swapped = true;
+			}
+			sort::comparisons++;
+			func(numbers, size);
+		}
+
+		a++;
+	}
+}
+
+void sort::gnome(int numbers[], int size, void(*func)(int num[], int))
+{
+	int i = 0;
+
+	while (i < size)
+	{
+		sort::comparisons += 3;
+		sort::selected = i;
+		if (i == 0)
+			i++;
+		if (numbers[i] >= numbers[i-1])
+			i++;
+		else
+		{
+			swap(&numbers[i], &numbers[i-1]);
+			i--;
+		}
+		func(numbers, size);
+	}
+}

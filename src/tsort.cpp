@@ -13,7 +13,6 @@ struct config
 	std::string type;
 } conf;	
 
-
 void fill(int numbers[], int size)
 {
 	for (int i = 0; i < size; i++)
@@ -109,14 +108,24 @@ int start()
  
 	if (conf.type == "bubble")
 	{
-		sort::bubble(numbers,size,printbars);
+		sort::bubble(numbers, size, printbars);
 	}else if (conf.type == "quick")
 	{
-		sort::quick(numbers,size,0,size-1,printbars);
+		sort::quick(numbers, size, 0, size-1, printbars);
 	}else if (conf.type == "bogo")
 	{
-		sort::bogo(numbers,size,printbars);
-	}else
+		sort::bogo(numbers, size, printbars);
+	}else if (conf.type == "insertion")
+	{
+		sort::insertion(numbers, size, printbars);
+	}else if (conf.type == "cocktail")
+	{
+		sort::cocktail(numbers, size, printbars);
+	}else if (conf.type == "gnome")
+	{
+		sort::gnome(numbers, size, printbars);
+	}
+	else
 	{
 		endwin();
 		std::cout << "Sort type " << "\""<< conf.type << "\"" << " not found" << std::endl;
@@ -170,8 +179,6 @@ void parse(int argc, char* argv[])
 				}
 				default:
 				{
-					endwin();
-					std::cout << "ERROR" << std::endl;
 					break;
 				}	
 			}	
@@ -187,9 +194,9 @@ int main(int argc, char* argv[])
 	curs_set(0);
 	getmaxyx(stdscr, yMax, xMax);
 
-	conf.amount = xMax/2;
-	conf.delay = 25;
-	conf.type = "quick";
+	conf.amount = xMax;
+	conf.delay = 12;
+	conf.type = "cocktail";
 	
 	parse(argc, argv); //parsing type doesnt work
 
