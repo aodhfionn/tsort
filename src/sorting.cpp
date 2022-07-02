@@ -56,7 +56,7 @@ void sort::bubble(int numbers[], int size, void(*func)(int num[], int))
 			}
 			func(numbers, size);
 		}
-		if (swapped = false)
+		if (swapped == false)
 			break;
 	}
 }
